@@ -1,12 +1,30 @@
-const viaCep = fetch('https://viacep.com.br/ws/01000/json/')
-    .then(response => response.json())
-    .then(r => {
+const viaCep = async (cep) => {
 
-        if (r.error()) {
-            throw Error('CEP não existe')
-        } else
-            console.log(r)
-    }).catch(e => {
-        console.log(e)
-    })
+    try {
+
+        const url = await fetch("https://viacep.com.br/ws/" + cep + "/json/")
+        const json = await url.json()
+
+        document.getElementById("endereco").value = json.logradouro
+        document.getElementById("bairro").value = json.bairro
+        document.getElementById("cidade").value = json.localidade
+        document.getElementById("estado").value = json.uf
+
+        if (json.erro) {
+            console.log("CEP nao existente")
+        }
+        console.log(json)
+    } catch (erro) {
+        throw Error(`nmao deu certo, motivo: ${erro}`)
+    }
+
+}
+
+const recebeCep = document.getElementById("cep").addEventListener('change', event => {
+    var cep = event.target.value
+    var cep2 = viaCep(cep)
+
+
+
+})
 
